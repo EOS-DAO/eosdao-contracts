@@ -5,3 +5,4 @@
 /contracts/eosio.token/eosio.token.ts
 /contracts/token/token.ts
 /contracts/voting/voting.ts
+/node_modules/

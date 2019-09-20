@@ -308,7 +308,7 @@ describe("EOS DAO Donation Contract", function() {
         await token_contract.transfer(donor1.name, donation_account.name, "100.0000 EOS", 'For the DAO!', { from: donor1 });
 
         const res: any = dao_token_contract.getTableRows('accounts', {scope:donor1.name, limit:1});
-        assertRowsEqual(res, [ { balance: '100.0000 DAO' } ]);
+        await assertRowsEqual(res, [ { balance: '100.0000 DAO' } ]);
     });
 
     it("Transfer from fake EOS contract doesn't award DAO tokens", async function() {
@@ -319,7 +319,7 @@ describe("EOS DAO Donation Contract", function() {
     });
 
     it("Below minimum donation of 1.0000 EOS", async function() {
-        assertEOSError(
+        await assertEOSError(
             token_contract.transfer(donor2.name, donation_account.name, "0.9999 EOS", "Below Minimum", { from: donor2 }),
             "eosio_assert_message_exception",
             "Minimum donation asserts"
@@ -328,7 +328,7 @@ describe("EOS DAO Donation Contract", function() {
 
     // token contract
     it("Require from address to authenticate", async function() {
-        assertEOSError(
+        await assertEOSError(
             token_contract.transfer(donor1.name, donor2.name, "50.0000 DAO", "Missing auth", { from: donor2 }),
             "missing_auth_exception",
             "Attempt to transfer tokens without authentication asserts"
@@ -336,7 +336,7 @@ describe("EOS DAO Donation Contract", function() {
     });
 
     it("Cannot transfer DAO tokens", async function() {
-        assertEOSError(
+        await assertEOSError(
             token_contract.transfer(donor1.name, donor2.name, "50.0000 DAO", "Transfer not allowed", { from: donor1 }),
             "eosio_assert_message_exception",
             "Attempt to transfer tokens asserts"
@@ -351,21 +351,21 @@ describe("EOS DAO Donation Contract", function() {
 
         await dao_token_contract.newmemtermse(terms_url, terms_hash, dac_id, { from: auth_account });
 
-        assertEOSError(
+        await assertEOSError(
             dao_token_contract.memberrege(donor1.name, terms_hash, dac_id, { from: donor1 }),
             "eosio_assert_message_exception",
             "Attempt to register with no hash asserts"
         );
 
 
-        assertEOSError(
+        await assertEOSError(
             dao_token_contract.memberrege(donor1.name, terms_hash, dac_id, { from: donor1 }),
             "eosio_assert_message_exception",
             "Attempt to register with no member terms configured asserts"
         );
 
 
-        assertEOSError(
+        await assertEOSError(
             dao_token_contract.memberrege(donor1.name, terms_incorrect, dac_id, { from: donor1 }),
             "eosio_assert_message_exception",
             "Attempt to register with incorrect hash asserts"

@@ -1,0 +1,19 @@
+{
+    "name": "eosdao-contracts",
+    "version": "1.0.0",
+    "description": "Contracts for EOS DAO",
+    "main": "index.js",
+    "scripts": {
+        "build": "lamington build",
+        "test": "lamington test"
+    },
+    "author": "Michael Yeates",
+    "license": "ISC",
+    "devDependencies": {
+        "lamington": "^1.0.0-alpha.3",
+        "@types/mocha": "^5.2.7"
+    },
+    "dependencies": {
+        "eosjs": "^20.0.0"
+    }
+}

@@ -1,0 +1,7 @@
+/.lamington/
+/contracts/daccustodian/daccustodian.ts
+/contracts/dacdirectory/dacdirectory.ts
+/contracts/donation/donation.ts
+/contracts/eosio.token/eosio.token.ts
+/contracts/token/token.ts
+/contracts/voting/voting.ts

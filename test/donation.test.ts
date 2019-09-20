@@ -53,6 +53,7 @@ describe("EOS DAO Donation Contract", function() {
             '5KQwrPbwdL6PhXujxW37FSSQZ1JiwsST4cqQzDeyXtP79zkvFD3'
         );
         await AccountManager.setupAccount(act);
+        await EOSManager.addSigningAccountIfMissing(act);
         return act;
     }
 
@@ -74,7 +75,6 @@ describe("EOS DAO Donation Contract", function() {
     }
 
     async function add_token_contract_permissions(){
-        EOSManager.addSigningAccountIfMissing(dao_token_account);
 
         // Append the `eosio.code` permission to existing
         const required_auth_d: any = {

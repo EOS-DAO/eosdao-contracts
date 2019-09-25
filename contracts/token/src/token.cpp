@@ -16,9 +16,9 @@ namespace eosdao {
         check( maximum_supply.is_valid(), "invalid supply");
         check( maximum_supply.amount > 0, "max-supply must be positive");
 
-        stats statstable( get_self(), sym.code().raw() );
+        stat_table statstable( get_self(), sym.code().raw() );
         auto existing = statstable.find( sym.code().raw() );
-        check( existing == statstable.end(), "voting with symbol already exists" );
+        check( existing == statstable.end(), "token with symbol already exists" );
 
         statstable.emplace( get_self(), [&]( auto& s ) {
            s.supply.symbol = maximum_supply.symbol;
@@ -38,7 +38,7 @@ namespace eosdao {
         check( sym.is_valid(), "invalid symbol name" );
         check( memo.size() <= 256, "memo has more than 256 bytes" );
 
-        stats statstable( get_self(), sym.code().raw() );
+        stat_table statstable( get_self(), sym.code().raw() );
         auto existing = statstable.find( sym.code().raw() );
         check( existing != statstable.end(), "voting with symbol does not exist, create voting before issue" );
         const auto& st = *existing;
@@ -77,10 +77,9 @@ namespace eosdao {
         require_auth( from );
         check( is_account( to ), "to account does not exist");
         auto sym = quantity.symbol.code();
-        stats statstable( get_self(), sym.raw() );
+        stat_table statstable( get_self(), sym.raw() );
         const auto& st = statstable.get( sym.raw() );
 
-        require_recipient( from );
         require_recipient( to );
 
         check( quantity.is_valid(), "invalid quantity" );
@@ -106,7 +105,7 @@ namespace eosdao {
         eosio::action(
                 eosio::permission_level{ get_self(), "notify"_n },
                 vote_contract, "balanceobsv"_n,
-                make_tuple(deltas, "eosdao"_n)
+                make_tuple(deltas, dac.dac_id)
         ).send();
 
     }
@@ -151,7 +150,7 @@ namespace eosdao {
         check(!hash.empty(), "ERR::NEWMEMTERMS_EMPTY_HASH::Member terms document hash cannot be empty.");
         check(hash.length() <= 32, "ERR::NEWMEMTERMS_HASH_TOO_LONG::Member terms document hash should be less than 32 characters long.");
 
-        tables::member_terms_table memberterms(_self, dac_id.value);
+        tables::member_terms_table memberterms(get_self(), dac_id.value);
 
         // guard against duplicate of latest
         if (memberterms.begin() != memberterms.end()) {
@@ -172,7 +171,7 @@ namespace eosdao {
     // Private methods
 
     void token::sub_balance( const name& owner, const asset& value ) {
-       accounts from_acnts( get_self(), owner.value );
+       account_table from_acnts( get_self(), owner.value );
 
        const auto& from = from_acnts.get( value.symbol.code().raw(), "no balance object found" );
        check( from.balance.amount >= value.amount, "overdrawn balance" );
@@ -184,7 +183,7 @@ namespace eosdao {
 
     void token::add_balance( const name& owner, const asset& value, const name& ram_payer )
     {
-       accounts to_acnts( get_self(), owner.value );
+       account_table to_acnts( get_self(), owner.value );
        auto to = to_acnts.find( value.symbol.code().raw() );
        if( to == to_acnts.end() ) {
           to_acnts.emplace( ram_payer, [&]( auto& a ){

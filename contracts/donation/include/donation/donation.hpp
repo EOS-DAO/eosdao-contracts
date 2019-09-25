@@ -2,9 +2,11 @@
 
 #include <eosio/asset.hpp>
 #include <eosio/eosio.hpp>
+#include <libeosdac/directory.hpp>
 
 #include <string>
 
+using namespace eosdac;
 using namespace eosio;
 using namespace std;
 

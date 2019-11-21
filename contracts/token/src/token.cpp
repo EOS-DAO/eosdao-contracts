@@ -99,7 +99,7 @@ namespace eosdao {
 
         // send inline action to the custodian contract to update any existing votes
         directory::types::dac dac = directory::dac_for_symbol(extended_symbol{quantity.symbol, get_self()});
-        eosio::name vote_contract = dac.account_for_type(directory::types::ROUTER);
+        eosio::name vote_contract = dac.account_for_type(directory::types::VOTE_WEIGHT);
 //        auto obsv_action = notify::balanceobsv_action(vote_contract, { { get_self(), "notify"_n } });
 //        obsv_action.send(deltas, "eosdao"_n);
         eosio::action(
